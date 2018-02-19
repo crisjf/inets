@@ -6,6 +6,9 @@ import links from "../data/links"
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
+cities.sort()
+years.sort((a,b) => a-b)
+
 const palette = [
   "#336699",
   "#339999",
@@ -16,7 +19,6 @@ const palette = [
 ]
 
 class App extends React.Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -109,7 +111,6 @@ class App extends React.Component {
   }
 }
 
-
 class IndustrialNetwork extends React.Component {
 
   constructor(props) {
@@ -121,14 +122,13 @@ class IndustrialNetwork extends React.Component {
   }
 
   updateTooltip(name) {
-    return (
-      () => this.setState({chosenNode: name})
-    )
+    this.setState({chosenNode: name})
   }
 
   render() {
     let lines = []
     for (let link of this.props.linkPositions) {
+      // <links link={link} updateTooltip={this.updateTooltip}/>
       lines.push(
         <line x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2}
           key={link.id} strokeWidth={this.props.linkScale*link.weight}
@@ -137,14 +137,7 @@ class IndustrialNetwork extends React.Component {
     }
     let circles = []
     for (let node of this.props.nodeData) {
-      circles.push(
-        <circle cx={node.x} cy={node.y} key={node.id}
-          r={this.props.nodeScale*node.size}
-          fill={(node.activated && node.color) || "#999999"}
-          onMouseEnter={this.updateTooltip(node.name)}
-          onMouseLeave={this.updateTooltip("")}
-        />
-      )
+      circles.push(<Node node={node} nodeScale={this.props.nodeScale} updateTooltip={this.updateTooltip}/>)
     }
 
     return(
@@ -152,8 +145,12 @@ class IndustrialNetwork extends React.Component {
         <div id="network">
           <svg width={this.props.width} height={this.props.height}>
             <g transform="translate(40,40)">
-              {lines}
-              {circles}
+              <g>
+                {lines}
+              </g>
+              <g>
+                {circles}
+              </g>
             </g>
           </svg>
         </div>
@@ -163,6 +160,32 @@ class IndustrialNetwork extends React.Component {
       </div>
     )
 
+  }
+}
+
+
+
+class Node extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleEnter = this.handleEnter.bind(this)
+    this.handleLeave = this.handleLeave.bind(this)
+  }
+  handleEnter(){
+    this.props.updateTooltip(this.props.node.name)
+  }
+  handleLeave(){
+    this.props.updateTooltip("")
+  }
+  render() {
+    return(
+      <circle cx={this.props.node.x} cy={this.props.node.y} key={this.props.node.id}
+        r={this.props.nodeScale*this.props.node.size}
+        fill={(this.props.node.activated && this.props.node.color) || "#999999"}
+        onMouseEnter={this.handleEnter}
+        onMouseLeave={this.handleLeave}
+      />
+    )
   }
 }
 
