@@ -57,6 +57,7 @@ class App extends React.Component {
     let nodeData = []
     for (let node of this.state.nodePositions) {
       let processedNode = {}
+      processedNode.id = node.id
       processedNode.x = 0.8*this.props.width*node.x
       processedNode.y = 0.8*this.props.height*node.y
       processedNode.name = node.name
@@ -128,16 +129,14 @@ class IndustrialNetwork extends React.Component {
   render() {
     let lines = []
     for (let link of this.props.linkPositions) {
-      // <links link={link} updateTooltip={this.updateTooltip}/>
       lines.push(
-        <line x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2}
-          key={link.id} strokeWidth={this.props.linkScale*link.weight}
-          stroke="black"/>
+        <Link key={link.id} link={link} linkScale={this.props.linkScale}/>
       )
     }
     let circles = []
     for (let node of this.props.nodeData) {
-      circles.push(<Node node={node} nodeScale={this.props.nodeScale} updateTooltip={this.updateTooltip}/>)
+      circles.push(<Node key={node.id} node={node} nodeScale={this.props.nodeScale}
+        updateTooltip={this.updateTooltip}/>)
     }
 
     return(
@@ -145,10 +144,10 @@ class IndustrialNetwork extends React.Component {
         <div id="network">
           <svg width={this.props.width} height={this.props.height}>
             <g transform="translate(40,40)">
-              <g>
+              <g key="lines">
                 {lines}
               </g>
-              <g>
+              <g key="nodes">
                 {circles}
               </g>
             </g>
@@ -179,12 +178,25 @@ class Node extends React.Component {
   }
   render() {
     return(
-      <circle cx={this.props.node.x} cy={this.props.node.y} key={this.props.node.id}
+      <circle cx={this.props.node.x} cy={this.props.node.y}
         r={this.props.nodeScale*this.props.node.size}
         fill={(this.props.node.activated && this.props.node.color) || "#999999"}
         onMouseEnter={this.handleEnter}
         onMouseLeave={this.handleLeave}
       />
+    )
+  }
+}
+
+
+class Link extends React.Component {
+  render() {
+    return(
+      <line x1={this.props.link.x1} y1={this.props.link.y1}
+        x2={this.props.link.x2} y2={this.props.link.y2}
+        key={this.props.link.id}
+        strokeWidth={this.props.linkScale*this.props.link.weight}
+        stroke="black"/>
     )
   }
 }
