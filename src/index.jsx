@@ -4,6 +4,7 @@ import nodeChanges from "../data/nodesChanges"
 import nodePositions from "../data/nodesPositions"
 import citiesMetadata from "../data/citiesMetadata"
 import links from "../data/links"
+import {Resize} from "replot-core"
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
@@ -71,8 +72,8 @@ class App extends React.Component {
     for (let node of this.state.nodePositions) {
       let processedNode = {}
       processedNode.id = node.id
-      processedNode.x = 0.9*this.props.width*node.x
-      processedNode.y = 0.9*this.props.height*node.y
+      processedNode.x = node.x
+      processedNode.y = node.y
       processedNode.name = node.name
       processedNode.color = palette[node.community_id%palette.length]
       nodeLookup[node.id] = {x: processedNode.x, y: processedNode.y}
@@ -136,7 +137,7 @@ class App extends React.Component {
 
 
         <div className="menu networkViz">
-          <IndustrialNetwork nodeData={nodeData}
+          <IndustrialNetworkResponsive nodeData={nodeData}
             linkPositions={linkPositions}
             linkScale={this.props.linkScale}
             nodeScale={this.props.nodeScale}
@@ -152,6 +153,16 @@ class App extends React.Component {
         </div>
       </div>
 
+    )
+  }
+}
+
+class IndustrialNetworkResponsive extends React.Component {
+  render() {
+    return(
+      <Resize width={this.props.width}>
+        <IndustrialNetwork {...this.props} />
+      </Resize>
     )
   }
 }
@@ -180,15 +191,19 @@ class IndustrialNetwork extends React.Component {
 
   render() {
     let lines = []
+    let widthScale = 0.9*this.props.width
+    let heightScale = 0.9*this.props.height
     for (let link of this.props.linkPositions) {
       lines.push(
-        <Link key={link.id} link={link} linkScale={this.props.linkScale}/>
+        <Link key={link.id} link={link} linkScale={this.props.linkScale}
+          widthScale={widthScale} heightScale={heightScale} />
       )
     }
     let circles = []
     for (let node of this.props.nodeData) {
       circles.push(<Node key={node.id} node={node} nodeScale={this.props.nodeScale}
-        updateTooltip={this.updateTooltip}/>)
+        updateTooltip={this.updateTooltip}
+        widthScale={widthScale} heightScale={heightScale} />)
     }
 
     return(
@@ -232,7 +247,8 @@ class Node extends React.Component {
   }
   render() {
     return(
-      <circle cx={this.props.node.x} cy={this.props.node.y}
+      <circle cx={this.props.widthScale*this.props.node.x}
+        cy={this.props.heightScale*this.props.node.y}
         r={this.props.nodeScale*this.props.node.size}
         fill={(this.props.node.activated && this.props.node.color) || "#3b424a"}
         onMouseEnter={this.handleEnter}
@@ -246,8 +262,10 @@ class Node extends React.Component {
 class Link extends React.Component {
   render() {
     return(
-      <line x1={this.props.link.x1} y1={this.props.link.y1}
-        x2={this.props.link.x2} y2={this.props.link.y2}
+      <line x1={this.props.widthScale*this.props.link.x1}
+        y1={this.props.heightScale*this.props.link.y1}
+        x2={this.props.widthScale*this.props.link.x2}
+        y2={this.props.heightScale*this.props.link.y2}
         key={this.props.link.id}
         strokeWidth={this.props.linkScale*this.props.link.weight}
         stroke="#212831"/>
@@ -258,6 +276,6 @@ class Link extends React.Component {
 
 ReactDOM.render(
   <App linkScale={1} nodeScale={15} defaultNodeSize={.5}
-    width={800} height={600} />,
+    width={"100%"} height={600} />,
   document.getElementById("react-app")
 )

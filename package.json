@@ -20,7 +20,8 @@
   "homepage": "https://github.com/crisjf/inets#readme",
   "dependencies": {
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "replot-core": "git+ssh://git@github.com/MacroConnections/replot-core.git"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
