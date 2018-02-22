@@ -22,8 +22,8 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      city: cities[0],
-      year: years[0],
+      city: 'Stockholm',
+      year: 1945,
       nodePositions: nodePositions,
       nodeChanges: nodeChanges,
       links: links
@@ -91,11 +91,14 @@ class App extends React.Component {
     let cityOptions = cities.map((e) => <option key={e} value={e}>{e}</option>)
     let yearOptions = years.map((e) => <option key={e} value={e}>{e}</option>)
 
+    let activeNodes = nodeData.filter((e) => e.activated).map((e) => <li key={e.name}>{e.name}</li>)
+
     return(
       <div>
         <select value={this.state.year} onChange={this.yearChanged}>
           {yearOptions}
         </select>
+
         <select value={this.state.city} onChange={this.cityChanged}>
           {cityOptions}
         </select>
@@ -107,7 +110,11 @@ class App extends React.Component {
             width={this.props.width} height={this.props.height}
           />
         </div>
+        <ul>
+          {activeNodes}
+        </ul>
       </div>
+
     )
   }
 }
@@ -141,6 +148,10 @@ class IndustrialNetwork extends React.Component {
 
     return(
       <div>
+        <div id="tooltip">
+          <p>{this.state.chosenNode}&nbsp;</p>
+        </div>
+
         <div id="network">
           <svg width={this.props.width} height={this.props.height}>
             <g transform="translate(40,40)">
@@ -152,9 +163,6 @@ class IndustrialNetwork extends React.Component {
               </g>
             </g>
           </svg>
-        </div>
-        <div id="tooltip">
-          <p>{this.state.chosenNode}</p>
         </div>
       </div>
     )
@@ -203,7 +211,7 @@ class Link extends React.Component {
 
 
 ReactDOM.render(
-  <App linkScale={1} nodeScale={1.5} defaultNodeSize={5}
+  <App linkScale={1} nodeScale={2} defaultNodeSize={2.5}
     width={800} height={600} />,
   document.getElementById("react-app")
 )
