@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import nodeChanges from "../data/nodesChanges"
 import nodePositions from "../data/nodesPositions"
 import citiesMetadata from "../data/citiesMetadata"
+import industriesMetadata from "../data/industriesMetadata"
 import links from "../data/links"
 import {Resize} from "replot-core"
 
@@ -37,6 +38,7 @@ class App extends React.Component {
       nodeChanges: nodeChanges,
       links: links,
       citiesMetadata: citiesMetadata,
+      industriesMetadata: industriesMetadata,
       citiesLookup: citiesLookup
     }
     this.yearChanged = this.yearChanged.bind(this)
@@ -63,7 +65,15 @@ class App extends React.Component {
     let nodeChangesLookup = {}
     for (let node of this.state.nodeChanges) {
       if (node.city === this.state.city && node.year === this.state.year) {
-        nodeChangesLookup[node.id] = {activated: node.activated, size: node.size, nodeExport:node.export, nodeShare:node.share}
+        nodeChangesLookup[node.id] = {activated: node.activated, size: node.size,
+          nodeExport:node.export, nodeShare:node.share}
+      }
+    }
+
+    let industriesMetadataLookup = {}
+    for (let node of this.state.industriesMetadata) {
+      if (node.year === this.state.year) {
+        industriesMetadataLookup[node.id] = {existed:node.existed}
       }
     }
 
@@ -81,6 +91,12 @@ class App extends React.Component {
         processedNode["activated"] = true
       } else {
         processedNode["activated"] = false
+      }
+
+      if (industriesMetadataLookup[node.id] && industriesMetadataLookup[node.id].existed) {
+        processedNode["existed"] = true
+      } else {
+        processedNode["existed"] = false
       }
       if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].size) {
         processedNode["size"] = nodeChangesLookup[node.id].size
@@ -168,7 +184,6 @@ class IndustrialNetworkResponsive extends React.Component {
 }
 
 class IndustrialNetwork extends React.Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -206,6 +221,9 @@ class IndustrialNetwork extends React.Component {
         widthScale={widthScale} heightScale={heightScale} />)
     }
 
+    let networkXPadding = parseInt(0.05*this.props.width)
+    let networkYPadding = parseInt(0.05*this.props.height)
+    let translate ="translate("+networkXPadding+","+networkYPadding+")"
     return(
       <div>
         <div id="tooltip">
@@ -215,7 +233,7 @@ class IndustrialNetwork extends React.Component {
 
         <div id="network">
           <svg width={this.props.width} height={this.props.height}>
-            <g transform="translate(40,40)">
+            <g transform={translate}>
               <g key="lines">
                 {lines}
               </g>
@@ -250,14 +268,13 @@ class Node extends React.Component {
       <circle cx={this.props.widthScale*this.props.node.x}
         cy={this.props.heightScale*this.props.node.y}
         r={this.props.nodeScale*this.props.node.size}
-        fill={(this.props.node.activated && this.props.node.color) || "#3b424a"}
+        fill={(this.props.node.activated && this.props.node.color) || (this.props.node.existed && "#3b424a") || "#212831"}
         onMouseEnter={this.handleEnter}
         onMouseLeave={this.handleLeave}
       />
     )
   }
 }
-
 
 class Link extends React.Component {
   render() {
@@ -273,9 +290,10 @@ class Link extends React.Component {
   }
 }
 
+let h = 0.75*window.innerHeight;
 
 ReactDOM.render(
-  <App linkScale={1} nodeScale={15} defaultNodeSize={.5}
-    width={"100%"} height={600} />,
+  <App linkScale={1} nodeScale={15} defaultNodeSize={.75}
+    width={"100%"} height={h} />,
   document.getElementById("react-app")
 )
