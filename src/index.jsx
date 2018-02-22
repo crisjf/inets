@@ -121,20 +121,19 @@ class App extends React.Component {
       <div>
         <div className="menu Left">
           <h2> Menu </h2>
-          <select value={this.state.year} onChange={this.yearChanged}>
+          <select value={this.state.year} onChange={this.yearChanged} className="menuSelect">
             {yearOptions}
           </select>
 
-          <select value={this.state.city} onChange={this.cityChanged}>
+          <select value={this.state.city} onChange={this.cityChanged} className="menuSelect">
             {cityOptions}
           </select>
-
           <ul>
             <li>Total export: {this.state.cityExport} SEK</li>
             <li>Diversification: {this.state.cityNProducts}</li>
           </ul>
-
         </div>
+
 
         <div className="menu networkViz">
           <IndustrialNetwork nodeData={nodeData}
