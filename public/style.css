@@ -1,0 +1,78 @@
+body {
+    background-color: #2c343d;
+}
+
+li {
+  color: #FFFFFF;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 20px;
+}
+
+p {
+  color: #FFFFFF;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	font-size: 14px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+
+h2 {
+  color: #FFFFFF;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	font-size: 22px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+
+h1 {
+  color: #FFFFFF;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	font-size: 28px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+  padding: 10px 10px;
+}
+
+.menu {
+    float: left;
+}
+
+.left {
+  width: 15%;
+}
+
+.left ul{
+  padding: 15px;
+}
+
+.right {
+  width: 25%;
+}
+
+#react-app {
+  margin: auto;
+}
+
+.networkViz {
+  margin: auto;
+  width: 55%;
+}
+
+#tooltip{
+  text-align:center;
+}
+
+#tooltip p {
+  margin: 0;
+  padding: 0;
+}

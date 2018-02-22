@@ -2,6 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import nodeChanges from "../data/nodesChanges"
 import nodePositions from "../data/nodesPositions"
+import citiesMetadata from "../data/citiesMetadata"
 import links from "../data/links"
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
@@ -21,12 +22,21 @@ const palette = [
 class App extends React.Component {
   constructor(props) {
     super(props)
+    let citiesLookup = {}
+    for (let entry of citiesMetadata) {
+      let cityYearLookup = {}
+      citiesLookup[[entry.city,entry.year]] = {export:parseInt(entry.export),nProducts:entry.nProducts}
+    }
     this.state = {
-      city: 'Stockholm',
-      year: 1945,
+      city: 'Sweden',
+      year: 1940,
+      cityExport: citiesLookup[['Sweden',1940]].export,
+      cityNProducts: citiesLookup[['Sweden',1940]].nProducts,
       nodePositions: nodePositions,
       nodeChanges: nodeChanges,
-      links: links
+      links: links,
+      citiesMetadata: citiesMetadata,
+      citiesLookup: citiesLookup
     }
     this.yearChanged = this.yearChanged.bind(this)
     this.cityChanged = this.cityChanged.bind(this)
@@ -34,13 +44,17 @@ class App extends React.Component {
 
   yearChanged(e) {
     this.setState({
-      year: parseInt(e.target.value)
+      year: parseInt(e.target.value),
+      cityExport: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].export,
+      cityNProducts: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].nProducts,
     })
   }
 
   cityChanged(e) {
     this.setState({
-      city: e.target.value
+      city: e.target.value,
+      cityExport: this.state.citiesLookup[[e.target.value,this.state.year]].export,
+      cityNProducts: this.state.citiesLookup[[e.target.value,this.state.year]].nProducts,
     })
   }
 
@@ -48,18 +62,17 @@ class App extends React.Component {
     let nodeChangesLookup = {}
     for (let node of this.state.nodeChanges) {
       if (node.city === this.state.city && node.year === this.state.year) {
-        nodeChangesLookup[node.id] = {activated: node.activated, size: node.size}
+        nodeChangesLookup[node.id] = {activated: node.activated, size: node.size, nodeExport:node.export, nodeShare:node.share}
       }
     }
-    console.log(nodeChangesLookup)
 
     let nodeLookup = {}
     let nodeData = []
     for (let node of this.state.nodePositions) {
       let processedNode = {}
       processedNode.id = node.id
-      processedNode.x = 0.8*this.props.width*node.x
-      processedNode.y = 0.8*this.props.height*node.y
+      processedNode.x = 0.9*this.props.width*node.x
+      processedNode.y = 0.9*this.props.height*node.y
       processedNode.name = node.name
       processedNode.color = palette[node.community_id%palette.length]
       nodeLookup[node.id] = {x: processedNode.x, y: processedNode.y}
@@ -73,6 +86,17 @@ class App extends React.Component {
       } else {
         processedNode["size"] = this.props.defaultNodeSize
       }
+      if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].nodeExport) {
+        processedNode["nodeExport"] = nodeChangesLookup[node.id].nodeExport
+      } else {
+        processedNode["nodeExport"] = ""
+      }
+      if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].nodeShare) {
+        processedNode["nodeShare"] = nodeChangesLookup[node.id].nodeShare
+      } else {
+        processedNode["nodeShare"] = ""
+      }
+
       nodeData.push(processedNode)
     }
 
@@ -95,14 +119,24 @@ class App extends React.Component {
 
     return(
       <div>
-        <select value={this.state.year} onChange={this.yearChanged}>
-          {yearOptions}
-        </select>
+        <div className="menu Left">
+          <h2> Menu </h2>
+          <select value={this.state.year} onChange={this.yearChanged}>
+            {yearOptions}
+          </select>
 
-        <select value={this.state.city} onChange={this.cityChanged}>
-          {cityOptions}
-        </select>
-        <div>
+          <select value={this.state.city} onChange={this.cityChanged}>
+            {cityOptions}
+          </select>
+
+          <ul>
+            <li>Total export: {this.state.cityExport} SEK</li>
+            <li>Diversification: {this.state.cityNProducts}</li>
+          </ul>
+
+        </div>
+
+        <div className="menu networkViz">
           <IndustrialNetwork nodeData={nodeData}
             linkPositions={linkPositions}
             linkScale={this.props.linkScale}
@@ -110,9 +144,13 @@ class App extends React.Component {
             width={this.props.width} height={this.props.height}
           />
         </div>
-        <ul>
-          {activeNodes}
-        </ul>
+
+        <div className="menu Right">
+          <h2> List of products </h2>
+          <ul>
+            {activeNodes}
+          </ul>
+        </div>
       </div>
 
     )
@@ -124,13 +162,21 @@ class IndustrialNetwork extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      chosenNode: ""
+      chosenNode: "",
+      nodeExport: ""
     }
     this.updateTooltip = this.updateTooltip.bind(this)
   }
 
-  updateTooltip(name) {
-    this.setState({chosenNode: name})
+  updateTooltip(name,nodeExport,nodeShare) {
+    if (nodeExport==0) {
+      nodeExport = ""
+    } else {
+      nodeShare = parseInt(nodeShare*10000)/100
+      nodeExport = "Export value: "+parseInt(nodeExport)+" SEK ("+nodeShare+"%)"
+    }
+    this.setState({chosenNode: name,
+                  nodeExport: nodeExport})
   }
 
   render() {
@@ -150,6 +196,7 @@ class IndustrialNetwork extends React.Component {
       <div>
         <div id="tooltip">
           <p>{this.state.chosenNode}&nbsp;</p>
+          <p>{this.state.nodeExport}&nbsp;</p>
         </div>
 
         <div id="network">
@@ -179,16 +226,16 @@ class Node extends React.Component {
     this.handleLeave = this.handleLeave.bind(this)
   }
   handleEnter(){
-    this.props.updateTooltip(this.props.node.name)
+    this.props.updateTooltip(this.props.node.name,this.props.node.nodeExport,this.props.node.nodeShare)
   }
   handleLeave(){
-    this.props.updateTooltip("")
+    this.props.updateTooltip("",0,"")
   }
   render() {
     return(
       <circle cx={this.props.node.x} cy={this.props.node.y}
         r={this.props.nodeScale*this.props.node.size}
-        fill={(this.props.node.activated && this.props.node.color) || "#999999"}
+        fill={(this.props.node.activated && this.props.node.color) || "#3b424a"}
         onMouseEnter={this.handleEnter}
         onMouseLeave={this.handleLeave}
       />
@@ -204,14 +251,14 @@ class Link extends React.Component {
         x2={this.props.link.x2} y2={this.props.link.y2}
         key={this.props.link.id}
         strokeWidth={this.props.linkScale*this.props.link.weight}
-        stroke="black"/>
+        stroke="#212831"/>
     )
   }
 }
 
 
 ReactDOM.render(
-  <App linkScale={1} nodeScale={2} defaultNodeSize={2.5}
+  <App linkScale={1} nodeScale={15} defaultNodeSize={.5}
     width={800} height={600} />,
   document.getElementById("react-app")
 )
