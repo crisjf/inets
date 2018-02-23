@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <title>iNets</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1> Industry Space for Swedish cities </h1>
+
+    <div class="methodsWrapper">
+      <p> The network is constructed by first calculating a matrix connecting regions and industries by year.
+        This matrix is calculated using the Revealed Comparative Advantage (RCA): </p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>R</mi><mi>C</mi><msubsup><mi>A</mi><mrow><mi>i</mi><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><mo>=</mo><mfrac><mrow><msubsup><mi>X</mi><mrow><mi>i</mi><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><mi>X</mi></mrow><mrow><msubsup><mi>X</mi><mi>i</mi><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><msubsup><mi>X</mi><mi>r</mi><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup></mrow></mfrac></math>
+      <p> and taking only those values where RCA is greater than one: </p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>M</mi><mrow><mi>i</mi><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><mo>=</mo><mfenced open="{" close=""><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mi>R</mi><mi>C</mi><msubsup><mi>A</mi><mrow><mi>i</mi><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><mo>&gt;</mo><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mtext>otherwise</mtext></mtd></mtr></mtable></mfenced></math>
+
+      <p> This enables us to define the total (accross time) number of regions in which two industries are present: </p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>R</mi><mrow><mi>i</mi><mi>i</mi><mo>'</mo></mrow></msub><mo>=</mo><munder><mo>&#x2211;</mo><mi>t</mi></munder><munder><mo>&#x2211;</mo><mi>r</mi></munder><msubsup><mi>M</mi><mrow><mi>i</mi><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><msubsup><mi>M</mi><mrow><mi>i</mi><mo>'</mo><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup></math>
+      <p> and the total number of region in which one of the industries is present:</p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>R</mi><mi>i</mi></msub><mo>=</mo><munder><mo>&#x2211;</mo><mi>t</mi></munder><munder><mo>&#x2211;</mo><mi>r</mi></munder><msubsup><mi>M</mi><mrow><mi>i</mi><mi>r</mi></mrow><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup></math>
+
+      <p> Next, we calculate the number of years in which an industry is present in our dataset: </p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><munder><mo>&#x2211;</mo><mi>t</mi></munder><mi>I</mi><mo>(</mo><msubsup><mi>R</mi><mi>i</mi><mrow><mo>(</mo><mi>t</mi><mo>)</mo></mrow></msubsup><mo>&gt;</mo><mn>1</mn><mo>)</mo></math>
+
+      <p> We define the measure of relatedness as the residual of the regression:</p>
+      <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>log</mi><mo>(</mo><msub><mi>R</mi><mrow><mi>i</mi><mi>i</mi><mo>'</mo></mrow></msub><mo>)</mo><mo>=</mo><msub><mi>&#x3B2;</mi><mn>0</mn></msub><mo>+</mo><msub><mi>&#x3B2;</mi><mn>1</mn></msub><mi>log</mi><mo>(</mo><msub><mi>R</mi><mi>i</mi></msub><msub><mi>R</mi><mrow><mi>i</mi><mo>'</mo></mrow></msub><mo>)</mo><mo>+</mo><msub><mi>&#x3B2;</mi><mn>2</mn></msub><mi>log</mi><mo>(</mo><mi>min</mi><mfenced open="{" close="}"><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mrow><mi>i</mi><mo>'</mo></mrow></msub></mrow></mfenced><mo>)</mo><mo>+</mo><msub><mi>&#x3B3;</mi><mrow><mi>i</mi><mi>i</mi><mo>'</mo></mrow></msub></math>
+
+      <p> In other words, we are considering two industries to be connected when they tend to co-locate
+        more than what can be explained by their geographical concentration
+        (<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>R</mi><mi>i</mi></msub></math>)
+        , and their temporal concentration (<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>y</mi><mi>i</mi></msub></math>)
+      </p>
+
+      <div class="methodsButton">
+        <a href="index.html" class="button">Back to Network</a>
+      </div>
+    </div>
+
+
+  </body>
+</html>
