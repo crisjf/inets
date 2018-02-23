@@ -1,0 +1,2 @@
+const communityName = [{"community_id":1,"name":"Bransch group 1"},{"community_id":2,"name":"Bransch group 2"},{"community_id":3,"name":"Bransch group 3"},{"community_id":4,"name":"Bransch group 4"},{"community_id":5,"name":"Bransch group 5"},{"community_id":6,"name":"Bransch group 6"},{"community_id":7,"name":"Bransch group 7"},{"community_id":8,"name":"Bransch group 8"},{"community_id":9,"name":"Bransch group 9"}] 
+export default communityName

@@ -94,3 +94,60 @@ h1 {
 	font-weight: 100;
 	font-variant: normal;
 }
+
+.legend {
+  padding-top: 30px;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 100;
+  line-height: 20px;
+  color: #FFFFFF;
+}
+
+.legendText {
+  fill: #FFFFFF;
+}
+
+
+a.button {
+  background-color: #2c343d;
+  border: none;
+  color: #FFFFFF;
+  border: 1px solid  #FFFFFF;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 10%;
+  margin-top: 20px;
+  float: right;
+}
+
+.methodsWrapper {
+  margin: auto;
+  width: 50%;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 20px;
+}
+
+.methodsWrapper p {
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 20px;
+}
+
+
+math {
+  color:#FFFFFF;
+  text-align: center;
+}

@@ -4,6 +4,7 @@ import nodeChanges from "../data/nodesChanges"
 import nodePositions from "../data/nodesPositions"
 import citiesMetadata from "../data/citiesMetadata"
 import industriesMetadata from "../data/industriesMetadata"
+import communityName from "../data/communityName"
 import links from "../data/links"
 import {Resize} from "replot-core"
 
@@ -13,12 +14,18 @@ cities.sort()
 years.sort((a,b) => a-b)
 
 const palette = [
-  "#336699",
-  "#339999",
-  "#336666",
-  "#996699",
-  "#336633",
-  "#116699",
+  "#03aedf",
+  "#81cbd5",
+  "#521301",
+  "#035a15",
+  "#e8b605",
+  "#e8a0c0",
+  "#aae905",
+  "#b10405",
+  "#03ad22",
+  "#aae905",
+  "#e8d98a",
+  "#d35005"
 ]
 
 class App extends React.Component {
@@ -30,7 +37,7 @@ class App extends React.Component {
       citiesLookup[[entry.city,entry.year]] = {export:parseInt(entry.export),nProducts:entry.nProducts}
     }
     this.state = {
-      city: 'Sweden',
+      city: 'Stockholm',
       year: 1940,
       cityExport: citiesLookup[['Sweden',1940]].export,
       cityNProducts: citiesLookup[['Sweden',1940]].nProducts,
@@ -39,7 +46,8 @@ class App extends React.Component {
       links: links,
       citiesMetadata: citiesMetadata,
       industriesMetadata: industriesMetadata,
-      citiesLookup: citiesLookup
+      citiesLookup: citiesLookup,
+      communityName:communityName
     }
     this.yearChanged = this.yearChanged.bind(this)
     this.cityChanged = this.cityChanged.bind(this)
@@ -134,6 +142,38 @@ class App extends React.Component {
 
     let activeNodes = nodeData.filter((e) => e.activated).map((e) => <li key={e.name}>{e.name}</li>)
 
+    let legendCircles = []
+    let legendText = []
+    let legendSeparation = 23
+    legendCircles.push(
+      <circle key={"notExistedLegendCircle"} cx={10} cy={10} r={8} fill={"#212831"}/>
+    )
+    legendText.push(
+      <text className={"legendText"} key={"notExistedLegendText"}
+        x={30} y={15}> {"Not produced in Sweden"} </text>
+    )
+    legendCircles.push(
+      <circle key={"notProducedLegendCircle"} cx={10} cy={10+1*legendSeparation} r={8} fill={"#3b424a"}/>
+    )
+    legendText.push(
+      <text className={"legendText"} key={"notProducedLegendText"}
+        x={30} y={15+1*legendSeparation}> {"Not produced in "+this.state.city}</text>
+    )
+    let legendCircleCount = 2
+    for (let community of this.state.communityName) {
+      legendCircles.push(
+        <circle key={"community"+community.community_id+"LegendCircle"}
+          cx={10} cy={10+legendSeparation*legendCircleCount} r={8}
+          fill={palette[community.community_id%palette.length]}/>
+      )
+      legendText.push(
+        <text className={"legendText"}
+          key={"community"+community.community_id+"LegendText"}
+          x={30} y={15+legendSeparation*legendCircleCount}> {""+community.name} </text>
+      )
+      legendCircleCount++;
+    }
+
     return(
       <div>
         <div className="menu Left">
@@ -149,6 +189,18 @@ class App extends React.Component {
             <li>Total export: {this.state.cityExport} SEK</li>
             <li>Diversification: {this.state.cityNProducts}</li>
           </ul>
+
+          <div className="legend">
+            <svg className="legendCircles" height={legendSeparation*legendCircleCount}>
+              {legendCircles}
+              {legendText}
+            </svg>
+          </div>
+
+          <div className={"methodsButton"}>
+            <a href="methods.html" className="button">Methods</a>
+          </div>
+
         </div>
 
 
