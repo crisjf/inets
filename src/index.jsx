@@ -10,6 +10,7 @@ import {Resize} from "replot-core"
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
+console.log(years)
 cities.sort()
 years.sort((a,b) => a-b)
 
