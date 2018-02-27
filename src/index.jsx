@@ -10,7 +10,6 @@ import {Resize} from "replot-core"
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
-console.log(years)
 cities.sort()
 years.sort((a,b) => a-b)
 
@@ -34,14 +33,15 @@ class App extends React.Component {
     super(props)
     let citiesLookup = {}
     for (let entry of citiesMetadata) {
-      let cityYearLookup = {}
-      citiesLookup[[entry.city,entry.year]] = {export:parseInt(entry.export),nProducts:entry.nProducts}
+      citiesLookup[[entry.city,entry.year]] = {export:parseInt(entry.export),
+        nProducts:entry.nProducts,firstYear:parseInt(entry.firstYear)}
     }
     this.state = {
       city: 'Stockholm',
       year: 1940,
       cityExport: citiesLookup[['Sweden',1940]].export,
       cityNProducts: citiesLookup[['Sweden',1940]].nProducts,
+      firstYear: citiesLookup[['Sweden',1940]].firstYear,
       nodePositions: nodePositions,
       nodeChanges: nodeChanges,
       links: links,
@@ -59,6 +59,7 @@ class App extends React.Component {
       year: parseInt(e.target.value),
       cityExport: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].export,
       cityNProducts: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].nProducts,
+      firstYear: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].firstYear,
     })
   }
 
@@ -67,6 +68,7 @@ class App extends React.Component {
       city: e.target.value,
       cityExport: this.state.citiesLookup[[e.target.value,this.state.year]].export,
       cityNProducts: this.state.citiesLookup[[e.target.value,this.state.year]].nProducts,
+      firstYear: this.state.citiesLookup[[e.target.value,this.state.year]].firstYear,
     })
   }
 
@@ -187,8 +189,9 @@ class App extends React.Component {
             {cityOptions}
           </select>
           <ul>
-            <li>Total export: {this.state.cityExport} SEK</li>
+            <li>Total production: {this.state.cityExport} SEK</li>
             <li>Diversification: {this.state.cityNProducts}</li>
+            <li>First reported year: {this.state.firstYear}</li>
           </ul>
 
           <div className="legend">
@@ -251,7 +254,7 @@ class IndustrialNetwork extends React.Component {
       nodeExport = ""
     } else {
       nodeShare = parseInt(nodeShare*10000)/100
-      nodeExport = "Export value: "+parseInt(nodeExport)+" SEK ("+nodeShare+"%)"
+      nodeExport = "Production value: "+parseInt(nodeExport)+" SEK ("+nodeShare+"%)"
     }
     this.setState({chosenNode: name,
                   nodeExport: nodeExport})
