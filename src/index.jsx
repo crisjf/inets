@@ -48,10 +48,14 @@ class App extends React.Component {
       citiesMetadata: citiesMetadata,
       industriesMetadata: industriesMetadata,
       citiesLookup: citiesLookup,
-      communityName:communityName
+      communityName:communityName,
+      playTimers: [],
+      playing: false
     }
     this.yearChanged = this.yearChanged.bind(this)
     this.cityChanged = this.cityChanged.bind(this)
+    this.playThrough = this.playThrough.bind(this)
+    this.stopPlayThrough = this.stopPlayThrough.bind(this)
   }
 
   yearChanged(e) {
@@ -70,6 +74,22 @@ class App extends React.Component {
       cityNProducts: this.state.citiesLookup[[e.target.value,this.state.year]].nProducts,
       firstYear: this.state.citiesLookup[[e.target.value,this.state.year]].firstYear,
     })
+  }
+
+  playThrough() {
+    let playTimers = []
+    for (let i=0; i < years.length; i++) {
+      playTimers.push(setTimeout(() => this.yearChanged({target: {value: years[i]}}), i*600))
+    }
+    this.setState({playTimers: playTimers, playing: true})
+    setTimeout(() => this.stopPlayThrough,(years.length + 1)*600)
+  }
+
+  stopPlayThrough() {
+    for (let timer of this.state.playTimers) {
+      clearTimeout(timer)
+    }
+    this.setState({playTimers: [], playing: false})
   }
 
   render() {
@@ -177,6 +197,11 @@ class App extends React.Component {
       legendCircleCount++;
     }
 
+    let playPauseButton = <button onClick={this.playThrough}> Play </button>
+    if (this.state.playing) {
+      playPauseButton = <button onClick={this.stopPlayThrough}> Stop </button>
+    }
+
     return(
       <div>
         <div className="menu Left">
@@ -188,6 +213,9 @@ class App extends React.Component {
           <select value={this.state.city} onChange={this.cityChanged} className="menuSelect">
             {cityOptions}
           </select>
+
+          {playPauseButton}
+
           <ul>
             <li>Total production: {this.state.cityExport} SEK</li>
             <li>Diversification: {this.state.cityNProducts}</li>
