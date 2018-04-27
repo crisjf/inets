@@ -6,7 +6,8 @@ import citiesMetadata from "../data/citiesMetadata"
 import industriesMetadata from "../data/industriesMetadata"
 import communityName from "../data/communityName"
 import links from "../data/links"
-import {Resize} from "replot-core"
+
+import IndustrialNetworkResponsive from "./components/IndustrialNetwork.jsx"
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
@@ -253,123 +254,6 @@ class App extends React.Component {
         </div>
       </div>
 
-    )
-  }
-}
-
-class IndustrialNetworkResponsive extends React.Component {
-  render() {
-    return(
-      <Resize width={this.props.width}>
-        <IndustrialNetwork {...this.props} />
-      </Resize>
-    )
-  }
-}
-
-class IndustrialNetwork extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      chosenNode: "",
-      nodeExport: ""
-    }
-    this.updateTooltip = this.updateTooltip.bind(this)
-  }
-
-  updateTooltip(name,nodeExport,nodeShare) {
-    if (nodeExport==0) {
-      nodeExport = ""
-    } else {
-      nodeShare = parseInt(nodeShare*10000)/100
-      nodeExport = "Production value: "+parseInt(nodeExport)+" SEK ("+nodeShare+"%)"
-    }
-    this.setState({chosenNode: name,
-                  nodeExport: nodeExport})
-  }
-
-  render() {
-    let lines = []
-    let widthScale = 0.9*this.props.width
-    let heightScale = 0.9*this.props.height
-    for (let link of this.props.linkPositions) {
-      lines.push(
-        <Link key={link.id} link={link} linkScale={this.props.linkScale}
-          widthScale={widthScale} heightScale={heightScale} />
-      )
-    }
-    let circles = []
-    for (let node of this.props.nodeData) {
-      circles.push(<Node key={node.id} node={node} nodeScale={this.props.nodeScale}
-        updateTooltip={this.updateTooltip}
-        widthScale={widthScale} heightScale={heightScale} />)
-    }
-
-    let networkXPadding = parseInt(0.05*this.props.width)
-    let networkYPadding = parseInt(0.05*this.props.height)
-    let translate ="translate("+networkXPadding+","+networkYPadding+")"
-    return(
-      <div>
-        <div id="tooltip">
-          <p>{this.state.chosenNode}&nbsp;</p>
-          <p>{this.state.nodeExport}&nbsp;</p>
-        </div>
-
-        <div id="network">
-          <svg width={this.props.width} height={this.props.height}>
-            <g transform={translate}>
-              <g key="lines">
-                {lines}
-              </g>
-              <g key="nodes">
-                {circles}
-              </g>
-            </g>
-          </svg>
-        </div>
-      </div>
-    )
-
-  }
-}
-
-
-
-class Node extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleEnter = this.handleEnter.bind(this)
-    this.handleLeave = this.handleLeave.bind(this)
-  }
-  handleEnter(){
-    this.props.updateTooltip(this.props.node.name,this.props.node.nodeExport,this.props.node.nodeShare)
-  }
-  handleLeave(){
-    this.props.updateTooltip("",0,"")
-  }
-  render() {
-    return(
-      <circle cx={this.props.widthScale*this.props.node.x}
-        cy={this.props.heightScale*this.props.node.y}
-        r={this.props.nodeScale*this.props.node.size}
-        fill={(this.props.node.activated && this.props.node.color) || (this.props.node.existed && "#3b424a") || "#212831"}
-        onMouseEnter={this.handleEnter}
-        onMouseLeave={this.handleLeave}
-      />
-    )
-  }
-}
-
-class Link extends React.Component {
-  render() {
-    return(
-      <line x1={this.props.widthScale*this.props.link.x1}
-        y1={this.props.heightScale*this.props.link.y1}
-        x2={this.props.widthScale*this.props.link.x2}
-        y2={this.props.heightScale*this.props.link.y2}
-        key={this.props.link.id}
-        strokeWidth={this.props.linkScale*this.props.link.weight}
-        stroke="#212831"/>
     )
   }
 }
