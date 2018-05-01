@@ -19,6 +19,16 @@ for (let entry of citiesMetadata) {
 }
 citiesMetadataKeys = [...new Set(citiesMetadataKeys.map((e) => e))]
 
+let nodeMetadataKeys = []
+for (let entry of nodeChanges) {
+  for (let keyName of Object.keys(entry)) {
+    if (keyName!="city" && keyName!="year" && keyName!="size" && keyName!="activated" && keyName!="id") {
+      nodeMetadataKeys.push(keyName)
+    }
+  }
+}
+nodeMetadataKeys = [...new Set(nodeMetadataKeys.map((e) => e))]
+
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
 cities.sort()
@@ -117,11 +127,20 @@ class App extends React.Component {
   render() {
     let nodeChangesLookup = {}
     for (let node of this.state.nodeChanges) {
+
+      // THIS IS FOR NODE META
+      let nodeMeta = {}
+      for (let key of nodeMetadataKeys) {
+        nodeMeta[key] = node[key]
+      }
+      // END NODE META
+
       if (node.city === this.state.city && node.year === this.state.year) {
         nodeChangesLookup[node.id] = {activated: node.activated, size: node.size,
-          nodeExport:node.export, nodeShare:node.share}
+          nodeMeta:nodeMeta}
       }
     }
+
 
     let nodeLookup = {}
     let nodeData = []
@@ -144,17 +163,11 @@ class App extends React.Component {
       } else {
         processedNode["size"] = this.props.defaultNodeSize
       }
-      if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].nodeExport) {
-        processedNode["nodeExport"] = nodeChangesLookup[node.id].nodeExport
+      if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].nodeMeta) {
+        processedNode["nodeMeta"] = nodeChangesLookup[node.id].nodeMeta
       } else {
-        processedNode["nodeExport"] = ""
+        processedNode["nodeMeta"] = {}
       }
-      if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].nodeShare) {
-        processedNode["nodeShare"] = nodeChangesLookup[node.id].nodeShare
-      } else {
-        processedNode["nodeShare"] = ""
-      }
-
       nodeData.push(processedNode)
     }
 

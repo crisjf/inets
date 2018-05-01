@@ -7,10 +7,15 @@ class Node extends React.Component {
     this.handleLeave = this.handleLeave.bind(this)
   }
   handleEnter(){
-    this.props.updateTooltip(this.props.node.name,this.props.node.nodeExport,this.props.node.nodeShare)
+    let nodeText = ""
+    for (let key of Object.keys(this.props.node.nodeMeta)) {
+      nodeText+= key+': '+this.props.node.nodeMeta[key]+', '
+    }
+    nodeText = nodeText.substring(0, nodeText.length - 2)
+    this.props.updateTooltip(this.props.node.name,nodeText)
   }
   handleLeave(){
-    this.props.updateTooltip("",0,"")
+    this.props.updateTooltip("","")
   }
   render() {
     return(

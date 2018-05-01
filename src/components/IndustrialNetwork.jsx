@@ -18,20 +18,14 @@ class IndustrialNetwork extends React.Component {
     super(props)
     this.state = {
       chosenNode: "",
-      nodeExport: ""
+      nodeText: "",
     }
     this.updateTooltip = this.updateTooltip.bind(this)
   }
 
-  updateTooltip(name,nodeExport,nodeShare) {
-    if (nodeExport==0) {
-      nodeExport = ""
-    } else {
-      nodeShare = parseInt(nodeShare*10000)/100
-      nodeExport = "Production value: "+parseInt(nodeExport)+" SEK ("+nodeShare+"%)"
-    }
+  updateTooltip(name,nodeText) {
     this.setState({chosenNode: name,
-                  nodeExport: nodeExport})
+                  nodeText: nodeText})
   }
 
   render() {
@@ -58,7 +52,7 @@ class IndustrialNetwork extends React.Component {
       <div>
         <div id="tooltip">
           <p>{this.state.chosenNode}&nbsp;</p>
-          <p>{this.state.nodeExport}&nbsp;</p>
+          <p>{this.state.nodeText}&nbsp;</p>
         </div>
 
         <div id="network">
