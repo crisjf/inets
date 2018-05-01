@@ -1,2 +1,2 @@
-const communityName = [{"community_id":1,"name":"Metals and machinery"},{"community_id":2,"name":"Earth and clay"},{"community_id":3,"name":"Wood"},{"community_id":4,"name":"Paper, pulp, and graphical"},{"community_id":5,"name":"Food"},{"community_id":6,"name":"Textiles and clothing"},{"community_id":7,"name":"Leather, hair, and rubber"},{"community_id":8,"name":"Chemicals"},{"community_id":9,"name":"Power stations, waterworks, and gasworks"}] 
+const communityName = [{"community_id":1,"name":"Community one"},{"community_id":2,"name":"Community two"}]
 export default communityName
