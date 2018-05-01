@@ -2,8 +2,8 @@ import React from "react"
 import ReactDOM from "react-dom"
 import nodeChanges from "../data/nodesChanges"
 import nodePositions from "../data/nodesPositions"
-import citiesMetadata from "../data/citiesMetadata"
-import industriesMetadata from "../data/industriesMetadata"
+// import citiesMetadata from "../data/citiesMetadata"
+// import industriesMetadata from "../data/industriesMetadata"
 import communityName from "../data/communityName"
 import links from "../data/links"
 
@@ -32,27 +32,31 @@ const palette = [
 class App extends React.Component {
   constructor(props) {
     super(props)
-    let citiesLookup = {}
-    for (let entry of citiesMetadata) {
-      citiesLookup[[entry.city,entry.year]] = {export:parseInt(entry.export),
-        nProducts:entry.nProducts,firstYear:parseInt(entry.firstYear)}
-    }
+    // let citiesLookup = {}
+    // for (let entry of citiesMetadata) {
+    //   citiesLookup[[entry.city,entry.year]] = {
+    //     export:parseInt(entry.export),
+    //     nProducts:entry.nProducts,
+    //     firstYear:parseInt(entry.firstYear)}
+    // }
+
     this.state = {
-      city: 'Stockholm',
-      year: 1940,
-      cityExport: citiesLookup[['Sweden',1940]].export,
-      cityNProducts: citiesLookup[['Sweden',1940]].nProducts,
-      firstYear: citiesLookup[['Sweden',1940]].firstYear,
+      city: 'Country A',
+      year: 1800,
+      // cityExport: citiesLookup[['Sweden',1940]].export,
+      // cityNProducts: citiesLookup[['Sweden',1940]].nProducts,
+      // firstYear: citiesLookup[['Sweden',1940]].firstYear,
       nodePositions: nodePositions,
       nodeChanges: nodeChanges,
       links: links,
-      citiesMetadata: citiesMetadata,
-      industriesMetadata: industriesMetadata,
-      citiesLookup: citiesLookup,
+      // citiesMetadata: citiesMetadata,
+      // industriesMetadata: industriesMetadata,
+      // citiesLookup: citiesLookup,
       communityName:communityName,
       playTimers: [],
       playing: false
     }
+
     this.yearChanged = this.yearChanged.bind(this)
     this.cityChanged = this.cityChanged.bind(this)
     this.playThrough = this.playThrough.bind(this)
@@ -62,18 +66,18 @@ class App extends React.Component {
   yearChanged(e) {
     this.setState({
       year: parseInt(e.target.value),
-      cityExport: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].export,
-      cityNProducts: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].nProducts,
-      firstYear: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].firstYear,
+      // cityExport: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].export,
+      // cityNProducts: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].nProducts,
+      // firstYear: this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]].firstYear,
     })
   }
 
   cityChanged(e) {
     this.setState({
       city: e.target.value,
-      cityExport: this.state.citiesLookup[[e.target.value,this.state.year]].export,
-      cityNProducts: this.state.citiesLookup[[e.target.value,this.state.year]].nProducts,
-      firstYear: this.state.citiesLookup[[e.target.value,this.state.year]].firstYear,
+      // cityExport: this.state.citiesLookup[[e.target.value,this.state.year]].export,
+      // cityNProducts: this.state.citiesLookup[[e.target.value,this.state.year]].nProducts,
+      // firstYear: this.state.citiesLookup[[e.target.value,this.state.year]].firstYear,
     })
   }
 
@@ -102,12 +106,12 @@ class App extends React.Component {
       }
     }
 
-    let industriesMetadataLookup = {}
-    for (let node of this.state.industriesMetadata) {
-      if (node.year === this.state.year) {
-        industriesMetadataLookup[node.id] = {existed:node.existed}
-      }
-    }
+    // let industriesMetadataLookup = {}
+    // for (let node of this.state.industriesMetadata) {
+    //   if (node.year === this.state.year) {
+    //     industriesMetadataLookup[node.id] = {existed:node.existed}
+    //   }
+    // }
 
     let nodeLookup = {}
     let nodeData = []
@@ -125,11 +129,11 @@ class App extends React.Component {
         processedNode["activated"] = false
       }
 
-      if (industriesMetadataLookup[node.id] && industriesMetadataLookup[node.id].existed) {
-        processedNode["existed"] = true
-      } else {
-        processedNode["existed"] = false
-      }
+      // if (industriesMetadataLookup[node.id] && industriesMetadataLookup[node.id].existed) {
+      //   processedNode["existed"] = true
+      // } else {
+      //   processedNode["existed"] = false
+      // }
       if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].size) {
         processedNode["size"] = nodeChangesLookup[node.id].size
       } else {
@@ -169,21 +173,22 @@ class App extends React.Component {
     let legendCircles = []
     let legendText = []
     let legendSeparation = 23
-    legendCircles.push(
-      <circle key={"notExistedLegendCircle"} cx={10} cy={10} r={8} fill={"#212831"}/>
-    )
-    legendText.push(
-      <text className={"legendText"} key={"notExistedLegendText"}
-        x={30} y={15}> {"Not produced in Sweden"} </text>
-    )
-    legendCircles.push(
-      <circle key={"notProducedLegendCircle"} cx={10} cy={10+1*legendSeparation} r={8} fill={"#3b424a"}/>
-    )
-    legendText.push(
-      <text className={"legendText"} key={"notProducedLegendText"}
-        x={30} y={15+1*legendSeparation}> {"Not produced in "+this.state.city}</text>
-    )
-    let legendCircleCount = 2
+    // legendCircles.push(
+    //   <circle key={"notExistedLegendCircle"} cx={10} cy={10} r={8} fill={"#212831"}/>
+    // )
+    // legendText.push(
+    //   <text className={"legendText"} key={"notExistedLegendText"}
+    //     x={30} y={15}> {"Not produced in Sweden"} </text>
+    // )
+    // legendCircles.push(
+    //   <circle key={"notProducedLegendCircle"} cx={10} cy={10+1*legendSeparation} r={8} fill={"#3b424a"}/>
+    // )
+    // legendText.push(
+    //   <text className={"legendText"} key={"notProducedLegendText"}
+    //     x={30} y={15+1*legendSeparation}> {"Not produced in "+this.state.city}</text>
+    // )
+    // let legendCircleCount = 2
+    let legendCircleCount = 0
     for (let community of this.state.communityName) {
       legendCircles.push(
         <circle key={"community"+community.community_id+"LegendCircle"}
@@ -217,11 +222,11 @@ class App extends React.Component {
 
           {playPauseButton}
 
-          <ul>
+          {/* <ul>
             <li>Total production: {this.state.cityExport} SEK</li>
             <li>Diversification: {this.state.cityNProducts}</li>
             <li>First reported year: {this.state.firstYear}</li>
-          </ul>
+          </ul> */}
 
           <div className="legend">
             <svg className="legendCircles" height={legendSeparation*legendCircleCount}>
@@ -230,9 +235,9 @@ class App extends React.Component {
             </svg>
           </div>
 
-          <div className={"methodsButton"}>
+          {/* <div className={"methodsButton"}>
             <a href="methods.html" className="button">Methods</a>
-          </div>
+          </div> */}
 
         </div>
 
