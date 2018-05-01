@@ -3,3 +3,4 @@ public/*.js
 data/rawNetwork/
 data/.ipynb_checkpoints/
 .DS_Store
+data/*.ipynb
