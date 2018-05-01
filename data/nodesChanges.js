@@ -46,5 +46,5 @@ const nodesChanges = [
 {'city': 'Country C', 'size': 0.5, 'activated': 1, 'id': 1, 'year': 1815, 'export': 300, 'share':0.1},
 {'city': 'Country C', 'size': 0.5, 'activated': 1, 'id': 2, 'year': 1815, 'export': 300, 'share':0.1},
 {'city': 'Country C', 'size': 0.5, 'activated': 1, 'id': 3, 'year': 1815, 'export': 300, 'share':0.1},
-{'city': 'Country C', 'size': 0.5, 'activated': 0, 'id': 4, 'year': 1815}]
+{'city': 'Country C', 'size': 0.5, 'activated': 1, 'id': 4, 'year': 1815, 'export': 300, 'share':0.1}]
 export default nodesChanges

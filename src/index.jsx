@@ -9,6 +9,7 @@ import citiesMetadata from "../data/citiesMetadata"
 import links from "../data/links"
 import IndustrialNetworkResponsive from "./components/IndustrialNetwork.jsx"
 
+
 let citiesMetadataKeys = []
 for (let entry of citiesMetadata) {
   for (let keyName of Object.keys(entry)) {
@@ -128,12 +129,10 @@ class App extends React.Component {
     let nodeChangesLookup = {}
     for (let node of this.state.nodeChanges) {
 
-      // THIS IS FOR NODE META
       let nodeMeta = {}
       for (let key of nodeMetadataKeys) {
         nodeMeta[key] = node[key]
       }
-      // END NODE META
 
       if (node.city === this.state.city && node.year === this.state.year) {
         nodeChangesLookup[node.id] = {activated: node.activated, size: node.size,
@@ -150,7 +149,12 @@ class App extends React.Component {
       processedNode.x = node.x
       processedNode.y = node.y
       processedNode.name = node.name
-      processedNode.color = palette[node.community_id%palette.length]
+      if (node.community_id) {
+        processedNode.color = palette[node.community_id%palette.length]
+      } else {
+        processedNode.color = palette[0%palette.length]
+      }
+
       nodeLookup[node.id] = {x: processedNode.x, y: processedNode.y}
       if (nodeChangesLookup[node.id] && nodeChangesLookup[node.id].activated) {
         processedNode["activated"] = true

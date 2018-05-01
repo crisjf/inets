@@ -53,6 +53,6 @@ Name of each community to use for the legend.
 Ex:
 {"community_id":1,"name":"Metals and machinery"}
 
-community_id : Id of the community
+community_id : Id of the community (starting at 1)
 name         : Community name
 ```
