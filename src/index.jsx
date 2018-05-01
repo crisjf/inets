@@ -3,9 +3,21 @@ import ReactDOM from "react-dom"
 import nodeChanges from "../data/nodesChanges"
 import nodePositions from "../data/nodesPositions"
 import communityName from "../data/communityName"
-import links from "../data/links"
 
+import citiesMetadata from "../data/citiesMetadata"
+
+import links from "../data/links"
 import IndustrialNetworkResponsive from "./components/IndustrialNetwork.jsx"
+
+let citiesMetadataKeys = []
+for (let entry of citiesMetadata) {
+  for (let keyName of Object.keys(entry)) {
+    if (keyName!="city" && keyName!="year") {
+      citiesMetadataKeys.push(keyName)
+    }
+  }
+}
+citiesMetadataKeys = [...new Set(citiesMetadataKeys.map((e) => e))]
 
 let cities = [...new Set(nodeChanges.map((e) => e.city))]
 let years = [...new Set(nodeChanges.map((e) => e.year))]
@@ -30,6 +42,21 @@ const palette = [
 class App extends React.Component {
   constructor(props) {
     super(props)
+
+    let citiesLookup = {}
+    for (let entry of citiesMetadata) {
+      let cityEntry = {}
+      for (let key of citiesMetadataKeys) {
+        cityEntry[key] = entry[key]
+      }
+      citiesLookup[[entry.city,entry.year]] = cityEntry
+    }
+
+    let cityMeta = {}
+    for (let key of citiesMetadataKeys) {
+      cityMeta[key] = citiesLookup[[cities[0],years[0]]][key]
+    }
+
     this.state = {
       city: cities[0],
       year: years[0],
@@ -38,7 +65,9 @@ class App extends React.Component {
       links: links,
       communityName:communityName,
       playTimers: [],
-      playing: false
+      playing: false,
+      citiesLookup: citiesLookup,
+      cityMeta:cityMeta,
     }
 
     this.yearChanged = this.yearChanged.bind(this)
@@ -48,14 +77,24 @@ class App extends React.Component {
   }
 
   yearChanged(e) {
+    let newCityMeta = {}
+    for (let key of citiesMetadataKeys) {
+      newCityMeta[key] = this.state.citiesLookup[[this.state.city,parseInt(e.target.value)]][key]
+    }
     this.setState({
-      year: parseInt(e.target.value),
+      year:parseInt(e.target.value),
+      cityMeta:newCityMeta,
     })
   }
 
   cityChanged(e) {
+    let newCityMeta = {}
+    for (let key of citiesMetadataKeys) {
+      newCityMeta[key] = this.state.citiesLookup[[e.target.value,this.state.year]][key]
+    }
     this.setState({
       city: e.target.value,
+      cityMeta:newCityMeta,
     })
   }
 
@@ -160,6 +199,13 @@ class App extends React.Component {
       playPauseButton = <button className="playButton" onClick={this.stopPlayThrough}> Stop </button>
     }
 
+    let citiesMetadataBullets = []
+    for (let key of citiesMetadataKeys) {
+      citiesMetadataBullets.push(
+        <li key={key+"_cityMeta"}>{key}: {this.state.cityMeta[key]}</li>
+      )
+    }
+
     return(
       <div>
         <div className="menu Left">
@@ -174,6 +220,10 @@ class App extends React.Component {
           <div className="playButtonDiv">
           {playPauseButton}
           </div>
+
+          <ul>
+           {citiesMetadataBullets}
+          </ul>
 
           <div className="legend">
             <svg className="legendCircles" height={legendSeparation*legendCircleCount}>
