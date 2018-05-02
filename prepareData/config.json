@@ -1,0 +1,28 @@
+{
+  "commit": false,
+  "links": {
+    "path": "rawData/links.csv",
+    "colNames" : {
+      "sourceCol": "default",
+      "targetCol": "default",
+      "weightCol": "default"
+    },
+    "defaultOrder": ["sourceCol","targetCol","weightCol"],
+    "outColumns": ["parentId","childId","weight"]
+  },
+  "nodes": {
+    "path": "rawData/nodes.csv",
+    "colNames" : {
+      "nodeCol": "default",
+      "xCol": "default",
+      "yCol": "default",
+      "nameCol": "default",
+      "communityCol":"default"
+    },
+    "defaultOrder": ["nodeCol","xCol","yCol","nameCol","communityCol"],
+    "outColumns": ["id","x","y","name","community_id"]
+  },
+  "nodesChanges": {
+    "path": "rawData/nodesChanges.csv"
+  }
+}
